@@ -4,21 +4,33 @@ import json
 import os
 
 st.set_page_config(page_title="Stadium Tour Predictions", page_icon="⚾", layout="centered")
-# --- HIDE STREAMLIT DEFAULT UI & CLOUD BADGES ---
+# --- BRUTE FORCE CSS TO HIDE STREAMLIT UI ---
 hide_streamlit_style = """
 <style>
-    /* 1. Hide the top-right toolbar (Fork, Star, GitHub) but KEEP the left navigation menu */
-    [data-testid="stToolbar"] {visibility: hidden !important;}
+    /* Hide the entire top toolbar (including Fork and Star buttons) */
+    [data-testid="stToolbar"] {
+        display: none !important;
+    }
     
-    /* 2. Hide the 'Made with Streamlit' footer */
-    footer {visibility: hidden !important;}
+    /* Hide the footer (Made with Streamlit) */
+    [data-testid="stBottom"] > div {
+        display: none !important;
+    }
+    footer {
+        display: none !important;
+    }
 
-    /* 3. Hide the Streamlit Cloud floating bottom badges (Crown, User, Manage App) */
-    .viewerBadge_container {display: none !important;}
-    .viewerBadge_link {display: none !important;}
-    #viewerBadge_container_pb {display: none !important;}
+    /* Hide the Viewer Badge just in case */
+    .viewerBadge_container {
+        display: none !important;
+    }
+    .viewerBadge_link {
+        display: none !important;
+    }
 </style>
 """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+# ---------------------------------------------
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # -------------------------------------------------
 DB_FILE = "tour_predictions.json"
