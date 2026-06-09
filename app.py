@@ -7,6 +7,7 @@ st.set_page_config(page_title="Family Tour Predictions", page_icon="⚾", layout
 
 hide_streamlit_style = """
 <style>
+    /* Hide Streamlit UI elements */
     [data-testid="stHeaderActions"] { display: none !important; }
     [data-testid="stHeader"] { background: transparent !important; }
     footer { display: none !important; }
@@ -14,35 +15,50 @@ hide_streamlit_style = """
     .viewerBadge_link {display: none !important;}
     #viewerBadge_container_pb {display: none !important;}
 
+    /* NEW FLEXBOX GRID FOR MOBILE */
+    .avatar-grid {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap; /* Allows wrapping on extremely tiny screens */
+        margin-bottom: 20px;
+    }
     .profile-img-container {
         cursor: pointer;
         transition: transform 0.2s;
         text-align: center;
-        margin-bottom: 20px;
+        width: 80px; /* Tighter container */
     }
     .profile-img-container:hover {
         transform: scale(1.05);
     }
     .profile-img {
-        width: 120px;
-        height: 120px;
+        width: 75px; /* Shrunk for mobile */
+        height: 75px;
         border-radius: 50%;
         object-fit: cover;
-        border: 4px solid #0056b3;
+        border: 3px solid #0056b3;
         background-color: white;
     }
     .initials-avatar {
-        width: 120px;
-        height: 120px;
+        width: 75px; 
+        height: 75px;
         border-radius: 50%;
         background-color: #0056b3;
         color: white;
-        font-size: 60px;
+        font-size: 35px; /* Smaller font to fit */
         font-weight: bold;
-        line-height: 120px;
+        line-height: 70px;
         text-align: center;
         display: inline-block;
-        border: 4px solid #fff;
+        border: 3px solid #fff;
+    }
+    .profile-name {
+        margin-top: 5px;
+        font-size: 14px;
+        font-weight: 600;
+        color: inherit;
     }
 </style>
 """
@@ -244,32 +260,38 @@ elif st.session_state.stage == "predicting":
 
 # --- LANDING PAGE ---
 else:
-    st.image(MLB_LOGO, width=80)
+    st.image(MLB_LOGO, width=60)
     st.title("Family Stadium Tour")
     st.write("Welcome to the prediction challenge! Click your picture to predict the next game.")
     st.write("---")
 
-    # Display 4 columns for players
-    cols = st.columns(4)
     player_names = ["Kenneth", "Stephanie", "Bishop", "Violet"]
     
-    for idx, player_name in enumerate(player_names):
+    # Build the HTML flexbox grid string for mobile alignment
+    grid_html = '<div class="avatar-grid">'
+    
+    for player_name in player_names:
         p_data = db["players"][player_name]
-        with cols[idx]:
-            if p_data.get("avatar_url"):
-                img_html = f'<img src="{p_data["avatar_url"]}" class="profile-img"/>'
-            else:
-                initial = player_name[0]
-                img_html = f'<div class="initials-avatar">{initial}</div>'
+        
+        if p_data.get("avatar_url"):
+            img_html = f'<img src="{p_data["avatar_url"]}" class="profile-img"/>'
+        else:
+            initial = player_name[0]
+            img_html = f'<div class="initials-avatar">{initial}</div>'
 
-            st.markdown(f"""
-                <div class="profile-img-container">
-                    <a href="?player={player_name}">
-                        {img_html}
-                    </a>
-                    <h4 style="margin-top: 5px;">{player_name}</h4>
-                </div>
-            """, unsafe_allow_html=True)
+        grid_html += f"""
+            <div class="profile-img-container">
+                <a href="?player={player_name}" style="text-decoration: none; color: inherit;">
+                    {img_html}
+                    <div class="profile-name">{player_name}</div>
+                </a>
+            </div>
+        """
+        
+    grid_html += '</div>'
+    
+    # Render the entire grid at once
+    st.markdown(grid_html, unsafe_allow_html=True)
             
     st.write("---")
     
@@ -277,33 +299,5 @@ else:
     with st.expander("👤 Choose Your Avatar"):
         selected_p = st.selectbox("Who are you updating?", player_names)
         
-        # Display the list of cartoons for them to pick from
         character_names = list(CARTOONS.keys())
         selected_character = st.selectbox("Select a Character", character_names)
-        
-        # Show a preview of the selected character
-        st.image(CARTOONS[selected_character], width=120, caption=f"Preview: {selected_character}")
-        
-        if st.button("Save Avatar"):
-            db["players"][selected_p]["avatar_url"] = CARTOONS[selected_character]
-            save_db(db)
-            st.success(f"Avatar updated for {selected_p}! Refreshing...")
-            st.rerun()
-
-    st.write("---")
-    
-    # Mini Leaderboard
-    st.write("### Current Leaderboard")
-    scores = {player: 0 for player in db["players"]}
-    for game in db["games"]:
-        results = game.get("results", {})
-        if results:
-            for player, preds in game.get("predictions", {}).items():
-                if player in scores:
-                    for q_id, answer in preds.items():
-                        if results.get(q_id) == answer:
-                            scores[player] += 1
-    
-    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-    for rank, (player, score) in enumerate(sorted_scores, 1):
-        st.write(f"**{rank}. {player}**: {score} pts")
