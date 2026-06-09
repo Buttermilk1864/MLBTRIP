@@ -15,7 +15,7 @@ hide_streamlit_style = """
     .viewerBadge_link {display: none !important;}
     #viewerBadge_container_pb {display: none !important;}
 
-    /* NEW FLEXBOX GRID FOR MOBILE */
+    /* FLEXBOX GRID FOR MOBILE */
     .avatar-grid {
         display: flex;
         flex-direction: row;
@@ -28,31 +28,18 @@ hide_streamlit_style = """
         cursor: pointer;
         transition: transform 0.2s;
         text-align: center;
-        width: 80px; /* Tighter container */
+        width: 80px; 
     }
     .profile-img-container:hover {
         transform: scale(1.05);
     }
     .profile-img {
-        width: 75px; /* Shrunk for mobile */
+        width: 75px; 
         height: 75px;
         border-radius: 50%;
         object-fit: cover;
         border: 3px solid #0056b3;
         background-color: white;
-    }
-    .initials-avatar {
-        width: 75px; 
-        height: 75px;
-        border-radius: 50%;
-        background-color: #0056b3;
-        color: white;
-        font-size: 35px; /* Smaller font to fit */
-        font-weight: bold;
-        line-height: 70px;
-        text-align: center;
-        display: inline-block;
-        border: 3px solid #fff;
     }
     .profile-name {
         margin-top: 5px;
@@ -64,37 +51,9 @@ hide_streamlit_style = """
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-DB_FILE = "tour_predictions_v3.json"
+# Updated version so it automatically resets your data!
+DB_FILE = "tour_predictions_v4.json"
 ADMIN_PASSWORD = "frankensox"
-
-# -- 2. CARTOON ROSTER (25 Characters) --
-CARTOONS = {
-    "Mickey Mouse": "https://upload.wikimedia.org/wikipedia/en/d/d4/Mickey_Mouse.png",
-    "Minnie Mouse": "https://upload.wikimedia.org/wikipedia/en/6/67/Minnie_Mouse.png",
-    "Bugs Bunny": "https://upload.wikimedia.org/wikipedia/en/1/17/Bugs_Bunny.svg",
-    "Daffy Duck": "https://upload.wikimedia.org/wikipedia/en/f/f4/Daffy_Duck.svg",
-    "Betty Boop": "https://upload.wikimedia.org/wikipedia/en/7/7b/Betty_Boop.png",
-    "Popeye": "https://upload.wikimedia.org/wikipedia/en/0/00/Popeye_the_Sailor.png",
-    "Olive Oyl": "https://upload.wikimedia.org/wikipedia/en/7/7d/Olive_Oyl.png",
-    "Homer Simpson": "https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png",
-    "Marge Simpson": "https://upload.wikimedia.org/wikipedia/en/0/0b/Marge_Simpson.png",
-    "SpongeBob": "https://upload.wikimedia.org/wikipedia/en/3/3b/SpongeBob_SquarePants_character.svg",
-    "Sandy Cheeks": "https://upload.wikimedia.org/wikipedia/en/a/a0/Sandy_Cheeks.svg",
-    "Scooby-Doo": "https://upload.wikimedia.org/wikipedia/en/5/53/Scooby-Doo.png",
-    "Velma Dinkley": "https://upload.wikimedia.org/wikipedia/en/9/9d/Velma_Dinkley.png",
-    "Fred Flintstone": "https://upload.wikimedia.org/wikipedia/en/a/ad/Fred_Flintstone.png",
-    "Wilma Flintstone": "https://upload.wikimedia.org/wikipedia/en/4/43/Wilma_Flintstone.png",
-    "Tom (Cat)": "https://upload.wikimedia.org/wikipedia/en/f/f6/Tom_Tom_and_Jerry.png",
-    "Jerry (Mouse)": "https://upload.wikimedia.org/wikipedia/en/2/2f/Jerry_Mouse.png",
-    "Snoopy": "https://upload.wikimedia.org/wikipedia/en/5/53/Snoopy_Peanuts.png",
-    "Lucy van Pelt": "https://upload.wikimedia.org/wikipedia/en/e/e9/Lucy_van_Pelt.png",
-    "Charlie Brown": "https://upload.wikimedia.org/wikipedia/en/2/22/Charlie_Brown.png",
-    "Dexter": "https://upload.wikimedia.org/wikipedia/en/1/1a/Dexter_from_Dexter%27s_Laboratory.png",
-    "Dee Dee": "https://upload.wikimedia.org/wikipedia/en/0/03/Dee_Dee_from_Dexter%27s_Laboratory.png",
-    "Garfield": "https://upload.wikimedia.org/wikipedia/en/b/bc/Garfield_the_Cat.svg",
-    "Lisa Simpson": "https://upload.wikimedia.org/wikipedia/en/e/ec/Lisa_Simpson.png",
-    "Pink Panther": "https://upload.wikimedia.org/wikipedia/en/9/91/Pink_Panther.png"
-}
 
 # MLB & Team Data
 TEAMS = {
@@ -113,15 +72,15 @@ TEAMS = {
 }
 MLB_LOGO = "https://upload.wikimedia.org/wikipedia/commons/a/a6/Major_League_Baseball_logo.svg"
 
-# -- 3. HELPER FUNCTIONS FOR DB & STATE --
+# -- 2. HELPER FUNCTIONS FOR DB & STATE --
 def initialize_db():
     if not os.path.exists(DB_FILE):
         default_data = {
             "players": {
-                "Kenneth": {"avatar_url": None},
-                "Stephanie": {"avatar_url": None},
-                "Bishop": {"avatar_url": None},
-                "Violet": {"avatar_url": None}
+                "Kenneth": {"avatar_url": "https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png"},
+                "Stephanie": {"avatar_url": "https://upload.wikimedia.org/wikipedia/en/0/0b/Marge_Simpson.png"},
+                "Bishop": {"avatar_url": "https://upload.wikimedia.org/wikipedia/en/a/aa/Bart_Simpson_200px.png"},
+                "Violet": {"avatar_url": "https://upload.wikimedia.org/wikipedia/en/e/ec/Lisa_Simpson.png"}
             },
             "games": [
                 {"id": 0, "title": "Day 2: PNC Park", "away": "LAD", "home": "PIT", "predictions": {}, "results": {}},
@@ -164,7 +123,7 @@ def get_questions(away_abbr, home_abbr):
         {"id": "q10", "text": "How long will the game last?", "options": ["Under 2.5 Hours", "Over 2.5 Hours"]}
     ]
 
-# -- 4. INITIALIZE STATE --
+# -- 3. INITIALIZE STATE --
 db = initialize_db()
 
 if "current_player" not in st.session_state:
@@ -185,7 +144,7 @@ def handle_nav():
 
 handle_nav()
 
-# -- 5. MAIN APP LOGIC --
+# -- 4. MAIN APP LOGIC --
 
 # --- ADMIN PAGE ---
 if admin_mode:
@@ -272,14 +231,9 @@ else:
     
     for player_name in player_names:
         p_data = db["players"][player_name]
-        
-        if p_data.get("avatar_url"):
-            img_html = f'<img src="{p_data["avatar_url"]}" class="profile-img"/>'
-        else:
-            initial = player_name[0]
-            img_html = f'<div class="initials-avatar">{initial}</div>'
+        img_html = f'<img src="{p_data["avatar_url"]}" class="profile-img"/>'
 
-        # Using standard concatenation to avoid triple-quote copy-paste formatting errors
+        # Using standard concatenation
         grid_html += '<div class="profile-img-container">'
         grid_html += f'<a href="?player={player_name}" style="text-decoration: none; color: inherit;">'
         grid_html += img_html
@@ -291,23 +245,6 @@ else:
     # Render the entire grid at once
     st.markdown(grid_html, unsafe_allow_html=True)
             
-    st.write("---")
-    
-    # Avatar Selector
-    with st.expander("👤 Choose Your Avatar"):
-        selected_p = st.selectbox("Who are you updating?", player_names)
-        
-        character_names = list(CARTOONS.keys())
-        selected_character = st.selectbox("Select a Character", character_names)
-        
-        st.image(CARTOONS[selected_character], width=100, caption=f"Preview: {selected_character}")
-        
-        if st.button("Save Avatar"):
-            db["players"][selected_p]["avatar_url"] = CARTOONS[selected_character]
-            save_db(db)
-            st.success(f"Avatar updated for {selected_p}! Refreshing...")
-            st.rerun()
-
     st.write("---")
     
     # Mini Leaderboard
