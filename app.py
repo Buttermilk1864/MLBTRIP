@@ -4,7 +4,23 @@ import json
 import os
 
 st.set_page_config(page_title="Stadium Tour Predictions", page_icon="⚾", layout="centered")
+# --- HIDE STREAMLIT DEFAULT UI & CLOUD BADGES ---
+hide_streamlit_style = """
+<style>
+    /* 1. Hide the top-right toolbar (Fork, Star, GitHub) but KEEP the left navigation menu */
+    [data-testid="stToolbar"] {visibility: hidden !important;}
+    
+    /* 2. Hide the 'Made with Streamlit' footer */
+    footer {visibility: hidden !important;}
 
+    /* 3. Hide the Streamlit Cloud floating bottom badges (Crown, User, Manage App) */
+    .viewerBadge_container {display: none !important;}
+    .viewerBadge_link {display: none !important;}
+    #viewerBadge_container_pb {display: none !important;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+# -------------------------------------------------
 DB_FILE = "tour_predictions.json"
 ADMIN_PASSWORD = "frankensox"
 
