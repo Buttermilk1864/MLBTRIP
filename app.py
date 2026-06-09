@@ -1,9 +1,20 @@
+
 import streamlit as st
 import json
 import os
 
 st.set_page_config(page_title="Stadium Tour Predictions", page_icon="⚾", layout="centered")
-
+# --- HIDE STREAMLIT DEFAULT UI ---
+hide_streamlit_style = """
+<style>
+    #MainMenu {visibility: hidden;} /* Hides the hamburger menu */
+    header {visibility: hidden;} /* Hides the top header bar entirely */
+    footer {visibility: hidden;} /* Hides the 'Made with Streamlit' footer */
+    .stApp [data-testid="stToolbar"] {display: none;} /* Extra safety to hide the toolbar icons */
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+# ---------------------------------
 DB_FILE = "tour_predictions.json"
 ADMIN_PASSWORD = "frankensox"
 
