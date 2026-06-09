@@ -279,14 +279,12 @@ else:
             initial = player_name[0]
             img_html = f'<div class="initials-avatar">{initial}</div>'
 
-        grid_html += f"""
-            <div class="profile-img-container">
-                <a href="?player={player_name}" style="text-decoration: none; color: inherit;">
-                    {img_html}
-                    <div class="profile-name">{player_name}</div>
-                </a>
-            </div>
-        """
+        # Using standard concatenation to avoid triple-quote copy-paste formatting errors
+        grid_html += '<div class="profile-img-container">'
+        grid_html += f'<a href="?player={player_name}" style="text-decoration: none; color: inherit;">'
+        grid_html += img_html
+        grid_html += f'<div class="profile-name">{player_name}</div>'
+        grid_html += '</a></div>'
         
     grid_html += '</div>'
     
