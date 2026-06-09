@@ -301,3 +301,29 @@ else:
         
         character_names = list(CARTOONS.keys())
         selected_character = st.selectbox("Select a Character", character_names)
+        
+        st.image(CARTOONS[selected_character], width=100, caption=f"Preview: {selected_character}")
+        
+        if st.button("Save Avatar"):
+            db["players"][selected_p]["avatar_url"] = CARTOONS[selected_character]
+            save_db(db)
+            st.success(f"Avatar updated for {selected_p}! Refreshing...")
+            st.rerun()
+
+    st.write("---")
+    
+    # Mini Leaderboard
+    st.write("### Current Leaderboard")
+    scores = {player: 0 for player in db["players"]}
+    for game in db["games"]:
+        results = game.get("results", {})
+        if results:
+            for player, preds in game.get("predictions", {}).items():
+                if player in scores:
+                    for q_id, answer in preds.items():
+                        if results.get(q_id) == answer:
+                            scores[player] += 1
+    
+    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    for rank, (player, score) in enumerate(sorted_scores, 1):
+        st.write(f"**{rank}. {player}**: {score} pts")
