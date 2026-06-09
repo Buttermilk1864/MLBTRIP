@@ -4,35 +4,27 @@ import json
 import os
 
 st.set_page_config(page_title="Stadium Tour Predictions", page_icon="⚾", layout="centered")
-# --- BRUTE FORCE CSS TO HIDE STREAMLIT UI ---
+# --- SURGICAL CSS TO HIDE RIGHT-SIDE BUTTONS AND FOOTER ---
 hide_streamlit_style = """
 <style>
-    /* Hide the entire top toolbar (including Fork and Star buttons) */
-    [data-testid="stToolbar"] {
+    /* Hide ONLY the right-side icons (Fork, Deploy, Star, etc.) */
+    [data-testid="stHeaderActions"] {
         display: none !important;
     }
     
-    /* Hide the footer (Made with Streamlit) */
-    [data-testid="stBottom"] > div {
-        display: none !important;
-    }
-    footer {
-        display: none !important;
+    /* Ensure the header background is transparent so it looks clean */
+    [data-testid="stHeader"] {
+        background: transparent !important;
     }
 
-    /* Hide the Viewer Badge just in case */
-    .viewerBadge_container {
-        display: none !important;
-    }
-    .viewerBadge_link {
+    /* Hide the 'Made with Streamlit' footer */
+    footer {
         display: none !important;
     }
 </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-# ---------------------------------------------
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-# -------------------------------------------------
+# ----------------------------------------------------------
 DB_FILE = "tour_predictions.json"
 ADMIN_PASSWORD = "frankensox"
 
